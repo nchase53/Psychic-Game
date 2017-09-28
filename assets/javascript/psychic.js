@@ -1,93 +1,84 @@
-var computerSelection = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  // Variables for user options -->
+  var letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 
-var totalGuesses = 9;
+  // This array will hold user guesses
+  var guessedLetters = [];
 
-var guessesLeft = 9;
+  // This variable will be randomly assigned one of the 26 letters 
+  var randomLetter = null;
 
-var guessedLetters = [];
+  // Here is our countdown
+  var guessesLeft = 9;
 
-var letterToGuess = null;
+  // This is out counter for wins/losses
+  var wins = 0;
+  var losses = 0;
 
+  // These functions updateGuesses, updateGuessesLeft, and updateGuessesSoFar
+  var updateGuessesLeft = function() {
+    //Here we grab the HTML element and setting it equal to the guessesLeft.
+    document.querySelector("#guesses-left").innerHTML = guessesLeft;
+  };
 
+  var updateRandomLetter = function() {
+    // Generate RandomLetter
+    randomLetter = letters[Math.floor(Math.random() * letters.length)];
+  };
 
-var computerGuess = computerSelection[Math.floor(Math.random() * computerSelection.length)];
-console.log(computerGuess)
+  var updateGuessesSoFar = function() {
+    //This function takes the guesses the user has tried and displays them seperated by commas.
+    document.querySelector("#guesses-so-far").innerHTML = guessedLetters.join(", ");
+  };
 
-//(i=0;1<24;)
+  //Function will be called when we reset everything
+  var reset = function() {
+    guessesLeft = 9;
+    guessedLetters = [];
+    updateRandomLetter();
+    updateGuessesLeft();
+    updateGuessesSoFar();
+  };
 
-
-
-var updateGuessesLeft = function() {
-
-  document.querySelector('#guessesLeft').innerHTML = "Guesses left: " + guessesLeft;};
-
-
-var updateLetterToGuess = function() {
-
-  letterToGuess = computerGuess[Math.floor(Math.random() * computerGuess.length)];};
-
-
-var updateGuessesSoFar = function() {
-  document.querySelector('#let').innerHTML = "Your Guesses so far: " + guessedLetters.join(', ');};
-
-
-var reset = function() {
-
-  totalGuesses = 9;
-
-  guessesLeft = 9;
-
-  guessedLetters = [];
-
-  letterToGuess = null;
-
-
-
-  updateLetterToGuess();
-
-
+  //Execute on page load.
+  updateRandomLetter();
   updateGuessesLeft();
 
-  updateGuessesSoFar();}
 
-updateLetterToGuess();
+  // This function will capture the keyboard clicks.
+  document.onkeyup = function(event) {
+    //reduces the guesses by one
+    guessesLeft--;
 
-updateGuessesLeft();
+    // Lowercase the letter
+    var letter = String.fromCharCode(event.keyCode).
+      toLowerCase();
 
-document.onkeyup = function(event) {
+    // Then add the guess to the guessedLetters array
+    guessedLetters.push(letter);
 
-  guessesLeft--;
+    // Then its going to run the update function
+    updateGuessesLeft();
+    updateGuessesSoFar();
 
+    // We'll check if there's a match.
+    if (letter === randomLetter) {
 
-
-  guessedLetters.push(userGuess);
-
-  updateGuessesLeft();
-
-  updateGuessesSoFar();
-
-  if (guessesLeft > 0) {
-
-    if (userGuess == letterToGuess) {
-
+      // If they match the user wins and HTML will display the win.
       wins++;
+      document.querySelector("#wins").innerHTML = wins;
 
-      document.querySelector('#wins').innerHTML = "Wins: " + wins;
-
-      alert("Yes, you got it!");
-
+      // Then we'll reser the game
       reset();
     }
-  } else if (guessesLeft == 0) {
+  
+    //If guesses run out...
+    if (guessesLeft === 0) {
 
-    losses++;
+      //Then we loss and HTML will display the loss
+      losses++;
+      document.querySelector("#losses").innerHTML = lossess;
 
-    document.querySelector('#losses').innerHTML = "Losses: " + losses;
-
-    alert("Try again?");
-
-
-
-    reset();
-
-  }}
+      //Then we call the reset.
+      reset();
+    }
+  };
